@@ -8,3 +8,4 @@ Tanulmányaim alatt megírt kódok - órai munka, házi feladatok, beadandók, z
    - operációs rendszerek gyakorlati zh-k
    - programozási technológia beadandók
    - kliensoldali webprogramozás beadandó - Ticket To Ride
+   - konkurrens programozás beadandó - Barber Shop
