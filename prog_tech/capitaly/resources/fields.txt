@@ -1,0 +1,21 @@
+20
+property
+luck 2000
+service 3000
+property
+luck 5000
+service 5000
+property
+luck 4000
+service 3000
+luck 900
+service 800
+property
+luck 2000
+service 1000
+property
+luck 5000
+service 3000
+property
+luck 700
+service 100

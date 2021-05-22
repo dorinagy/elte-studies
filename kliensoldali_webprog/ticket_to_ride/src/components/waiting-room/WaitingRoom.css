@@ -1,0 +1,13 @@
+.waiting-room {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    background: #1d254a;
+    padding: 450px;
+}
+
+.waiting-room .btn-container {
+    justify-content: space-between;
+    display: flex;
+}

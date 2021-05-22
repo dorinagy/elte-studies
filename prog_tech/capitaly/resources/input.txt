@@ -1,0 +1,4 @@
+3
+Janos greedy
+Geza cautious
+Eszti tactician
