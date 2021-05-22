@@ -1,0 +1,13 @@
+Kulcs decimális számjegyekből áll (0-9)
+Hossz: 8 Vagy 9
+
+ha 8 josszú: 10^8
+ha 9 hosszú: 10^9
+
+keyspace_size = 10^8 + 10^9
+
+Mekkora biztonság?
+-> binary key length: L, keyspace: 2^L
+smallest integer L with 2^L >= keyspace_size
+
+L = cell(log(keyspace_size, 2))
