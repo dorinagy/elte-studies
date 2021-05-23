@@ -8,15 +8,17 @@ function Players() {
 
   const players = useSelector(getPlayers);
 
+  console.log('XXXXXXXXXXXXXXXX')
+
   return (
     <div className="game-players">
       <div className="title">Játékosok</div>
-      {players.map((player, index) => ( 
+      {Object.values(players).map((player, index) => ( 
         <Player 
           name={player.name} 
           points={player.points}  
-          vagons={player.vagons} 
-          cards={player.cards} 
+          wagons={player.wagons} 
+          cards={player.wagonCards.length} 
           destination={player.destinations} 
           round={player.round} 
           key={index}

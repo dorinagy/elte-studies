@@ -4,7 +4,7 @@ import { Redirect } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { initGame } from "../../redux/actions";
-import { getMaxPlayers, getPlayers, countPlayers } from "../../redux/selectors";
+import { getMaxPlayers, getPlayers, countPlayers, getRoomCode } from "../../redux/selectors";
 
 import "./WaitingRoom.css";
 
@@ -15,12 +15,14 @@ function Wait() {
   let maxPlayers = useSelector(getMaxPlayers);
   const history = useHistory();
 
+  const code = useSelector(getRoomCode);
+
   if (!maxPlayers) maxPlayers = 2;
 
   const dispatch = useDispatch();
 
   const enterGame = () => {
-      dispatch(initGame(players));
+      dispatch(initGame({players}));
       history.push("/game");
   };
   
@@ -37,6 +39,7 @@ function Wait() {
 
     return (
       <div className="waiting-room">
+        <h1>KÓD: {code}</h1><br/>
         <div>Waiting for other players to connect.</div>
         <div>{playersCount} / {maxPlayers} players have joined.</div>
 

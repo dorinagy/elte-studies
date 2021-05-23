@@ -8,7 +8,7 @@ import purple from "./res/p_card_front.jpg";
 import black from "./res/bl_card_front.jpg";
 import card_back from "./res/card_back.png";
 import train_ticket_back from "./res/train_ticket_back.png";
-import colorful from "./res/colorful.jpeg";
+import locomotive from "./res/locomotive.jpeg";
 
 
 const images = {
@@ -22,7 +22,7 @@ const images = {
     black,
     card_back,
     train_ticket_back,
-    colorful
+    locomotive
 };
 
 export const getSource = (name) => {

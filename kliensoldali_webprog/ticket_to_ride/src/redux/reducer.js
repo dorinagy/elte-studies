@@ -1,24 +1,22 @@
 import { ticketToRideData } from "../res/ticket-to-ride-data";
 
-import { initialGameState, initalPlayers, initPlayer } from "./status";
+import { initialGameState, initalPlayers } from "./status";
 
-export const playerCountReducer = (newState = 0, action) => {
+export const playerCountReducer = (state = 0, action) => {
     const { type, payload } = action;
 
     if (type === "MODIFY_PLAYER_COUNT") {
-        return newState + (payload);
+        return state + (payload);
     }
-
-    return newState;
-};
-
-export const gameDataReducer = (state = ticketToRideData, action) => { 
 
     return state;
 };
 
-export const playerReducer = (state = initalPlayers, action) => { 
+export const gameDataReducer = (state = ticketToRideData, action) => { 
+    return state;
+};
 
+export const playerReducer = (state = initalPlayers, action) => { 
     return state;
 };
 
@@ -28,170 +26,214 @@ export const gameStateReducer = (
 ) => {
     const { type, payload } = action;
 
-    let newState = Object.assign({}, state);
-
     if (type === "START_GAME") {
 
-        newState.state = payload.state;
+        state.state = 'START_GAME';
+        state.players = payload.players;
+        // set current player
+        state.currentPlayer = state.players['player1'];
+        state.code = Math.random().toString(36).substring(7); // generate room code
 
-        const actPlayer = Object.assign(initPlayer, {name: 'Játékos1'});
-        //newState.players.push(owner);
-        newState.currentPlayer = actPlayer;
-        //newState.gameStatus = 'WAITING_FOR_PLAYERS';
-       // newState.maxPlayers = 2;
-        newState.code = Math.random().toString(36).substring(7);
-
-        return newState;
     } else if (type === "INIT_GAME") {
-        newState.wagonCards = generateWagonCards();
-        newState.shortDestinationCards = generateShortDestinationCards();
-        newState.longDestinationCards = generateLongDestinationCards();
+        state.state = 'INIT_GAME';
 
-        console.log(newState);
+        // if more than 3 locomotives - redraw deck
+        do {
+            state.wagonCards = generateWagonCards();
+            state.onFieldWagonCards = [];
+            if (state.wagonCards) {
+                for (let i = 0; i < 5; i++) {
+                    // train cards on table (4)
+                    state.onFieldWagonCards?.push(state.wagonCards[i]);
+                }
+            }
+        } while (countWagons(state.onFieldWagonCards) >= 3);
 
-        newState.players.forEach((element) => {
-            element.wagonCards = [];
-            if (newState.wagonCards) {
+        state.wagonCards = state.wagonCards?.slice(5, state.wagonCards.length);
+
+        // generate destination cards
+        state.shortDestinationCards = generateShortDestinationCards();
+        state.longDestinationCards = generateLongDestinationCards();
+
+        state.players = payload.players
+        // set current player
+        state.currentPlayer = state.players[0];
+
+        // add wagon cards to players (4)
+        state.players.forEach((player) => {
+            player.wagonCards = [];
+            if (state.wagonCards) {
                 for (let i = 0; i < 4; i++) {
-                    element.wagonCards.push(JSON.parse(JSON.stringify(newState.wagonCards[i])));
+                    player.wagonCards.push(JSON.parse(JSON.stringify(state.wagonCards[i])));
                 }    
             } 
-            newState.wagonCards = newState.wagonCards?.slice(4, newState.wagonCards.length);
-            element.shortDestCards = [];
-            if (newState.shortDestinationCards) {
+            state.wagonCards = state.wagonCards?.slice(4, state.wagonCards.length);
+            player.shortDestCards = [];
+            if (state.shortDestinationCards) { // 4 short destination card for each player
                 for (let i = 0; i < 5; i++) {
-                    element.shortDestCards.push(newState.shortDestinationCards[i]);
+                    player.shortDestCards.push(state.shortDestinationCards[i]);
                 }
             }
-            newState.shortDestinationCards = newState.shortDestinationCards?.slice(5, newState.shortDestinationCards.length);
-            element.longDestCards = [];
-            if (newState.longDestinationCards) {
-                element.longDestCards.push(newState.longDestinationCards[0]);
+            state.shortDestinationCards = state.shortDestinationCards?.slice(5, state.shortDestinationCards.length);
+            player.longDestCards = [];
+            if (state.longDestinationCards) { // 1 long destination card for each player
+                player.longDestCards.push(state.longDestinationCards[0]);
             }
 
-            newState.longDestinationCards = newState.longDestinationCards?.slice(1, newState.longDestinationCards.length);
-            element.wagons = 45;
-            element.points = 0;
+            state.longDestinationCards = state.longDestinationCards?.slice(1, state.longDestinationCards.length);
+            player.wagons = 45; // initial wagons/player : 45
+            player.points = 0;
         });
 
-        newState.players[0].isSelected = true;
+        state.players[0].isSelected = true;
 
-        //newState.gameStatus = 'IN_GAME';
-        return newState;
-    }  else if (action.type === "CHANGE_TO_PLAYER1") {
-        console.log('CHANGE_TO_PLAYER1',action)
-        newState.players = action.payload.players;
+        state.status = 'IN_GAME';
+        return state;
 
-        newState.players[0].isSelected = true;
-        newState.players[1].isSelected = false;
+    }  else if (type === 'DRAW_FROM_DECK') {
+        /* 
+            DRAW CARD FROM DECK
+        */
+        console.log('player status', state.currentPlayer)
+        if (state.currentPlayer?.status === 'BEGIN') {
 
-        return newState;
+            state.currentPlayer?.wagonCards?.push(state.wagonCards[0]);
 
-    } else if (action.type === "CHANGE_TO_PLAYER2") {
-        
-        console.log('CHANGE_TO_PLAYER2',action)
-        newState.players = action.payload.players;
-
-        newState.players[0].isSelected = false;
-        newState.players[1].isSelected = true;
-
-        return newState;
-
-    } else if (action.type === "GET_CARD_FROM_DECK_TO_PLAYER") {
-        newState = action.payload;
-        newState.currentPlayer.cards.push(newState.storage.pop()); 
-        
-        return newState;
-
-    } else if (action.type === "GET_CARD_FROM_TABLE_TO_PLAYER") {
-        newState = action.payload;
-        console.log(newState.backlog);
-
-        for (const card in newState.cardsOnTable) {
-            if (newState.cardsOnTable[card].image.props.alt === newState.chosedCard) {
-                newState.newState = newState.players[0].isSelected 
-                    ? `${newState.players[0].name} köre`
-                    : `${newState.players[1].name} köre`;
-
-                if (newState.currentPlayer.drawCount < 2) {
-                    if (newState.chosedCard === "Mozdony" && newState.currentPlayer.drawCount === 0) {
-                        newState.currentPlayer.cards.push(newState.cardsOnTable[card]);
-                        newState.cardsOnTable[card] = newState.storage.pop();
-                        newState.backlog.push(newState.currentPlayer.name + " húzott egy mozdonyt");
-
-                        newState.currentPlayer.round++;
-                        newState.currentPlayer.drawCount = 0;
-
-                        if (newState.players[0].isSelected) {
-                            newState.players[0].isSelected = false;
-                            newState.players[1].isSelected = true;
-                            newState.newState = `${newState.players[1].name} köre`;
-                        } else {
-                            newState.players[0].isSelected = true;
-                            newState.players[1].isSelected = false;
-                            newState.newState = `${newState.players[0].name} köre`;
-                        }
-                        break;
-                    } else if(newState.chosedCard === "Mozdony" && newState.currentPlayer.drawCount !== 0) { 
-                        alert("Már húztál egy lapot! Nem húzhatsz mozdonyt!");
-                        break;
-                    } else {
-                        newState.currentPlayer.cards.push(newState.cardsOnTable[card]);
-                        newState.cardsOnTable[card] = newState.storage.pop();
-                        newState.backlog.push(newState.currentPlayer.name + " húzott egy vasútkocsi-kártyát");
-
-                        newState.currentPlayer.drawCount++;
-                        if (newState.currentPlayer.drawCount === 2) { // Váltás
-                            newState.currentPlayer.round++;
-                            newState.currentPlayer.drawCount = 0;
-                            if (newState.players[0].isSelected) {
-                                newState.players[0].isSelected = false;
-                                newState.players[1].isSelected = true;
-                                newState.newState = `${newState.players[1].name} köre`;
-                            } else {
-                                newState.players[0].isSelected = true;
-                                newState.players[1].isSelected = false;
-                                newState.newState = `${newState.players[0].name} köre`;
-                            }
-                        }
-                        break;
-                    }
+            state.players = state.players.map((player) => {
+                if (player.index === state.currentPlayer?.index && state.wagonCards) {
+                    console.log(`${player.name} ${state.wagonCards[0].type} vasútikocsi kártyát húzott a pakliból`)
+                    player.moves.push(`${player.name} ${state.wagonCards[0].type} vasútikocsi kártyát húzott a pakliból`);
+                    player.wagonCards?.push(state.wagonCards[0]);
+                    state.wagonCards = state.wagonCards.slice(1, state.wagonCards.length);
                 }
+                return player;
+            });
+
+            state.currentPlayer.status = 'DRAW';
+
+        } else if (state.currentPlayer?.status === 'DRAW') {
+            console.log('DRAW')
+
+            state.currentPlayer?.wagonCards?.push(state.wagonCards[0]);
+
+            state.players = state.players.map((player, i) => {
+                if (i === state.currentPlayer?.index && state.wagonCards) {
+                    player.wagonCards?.push(state.wagonCards[0]);
+                    console.log(`${player.name} ${state.wagonCards[0].type} vasútikocsi kártyát húzott a pakliból`)
+                    player.moves.push(`${player.name} ${state.wagonCards[0].type} vasútikocsi kártyát húzott a pakliból`);
+                    state.wagonCards = state.wagonCards.slice(1, state.wagonCards.length);
+                }
+                return player;
+            });
+
+            let index = state.currentPlayer?.index == 0 ? 1 : 0;
+
+            state.currentPlayer.status = 'END';
+            
+            state.players[state.currentPlayer.index].isSelected = false;
+            state.players[index].isSelected = true;
+            state.players[index].round++;
+
+            state.currentPlayer = Object.assign({}, state.players[index]);
+            state.currentPlayer.status = 'BEGIN';
+
+            console.log('Next round, player:', state.currentPlayer.name);
+        }
+
+        state = JSON.parse(JSON.stringify(state));
+        return state;
+
+    } else if (type === 'DRAW_CARD') {
+        /* 
+            VASÚTI KÁRTYA HÚZÁSA AZ ASZTALRÓL
+        */
+        console.log('player status', state.currentPlayer) // aktuális játékos
+        const { number: idx } = payload; // kártya száma
+        if (state.currentPlayer?.status === 'BEGIN') { // ELSŐ KÖRÖS HÚZÁS  
+
+            // ha van a pakliban kártya
+            if (state.onFieldWagonCards && state.wagonCards) {
+
+                console.log('REFRESH PLAYER CARDS');
+                state.currentPlayer?.wagonCards?.push(state.onFieldWagonCards[idx]);
+
+                // kicseréljük a húzott kártyát
+                const cards = Object.assign([], state.onFieldWagonCards);
+                cards[idx] = state.wagonCards[0];
+                state.onFieldWagonCards = Object.assign([], cards);
+
+                state.wagonCards = state.wagonCards.slice(1, state.wagonCards.length);
+
+                state.players.forEach((player, i) => {
+                    if (i === state.currentPlayer?.index) {
+                        player.wagonCards = state.currentPlayer?.wagonCards;
+                        console.log(`${player.name} ${state.onFieldWagonCards[idx].type} vasútikocsi kártyát húzott az asztalról`)
+                        player.moves.push(`${player.name} ${state.onFieldWagonCards[idx].type} vasútikocsi kártyát húzott az asztalról`);
+                    }
+                });
             }
-        }
-        return newState;
 
-    } else if (action.type === "TOO_MANY_LOCOMOTIVES") {
-        newState.storage = action.payload.storage;
-        newState.cardsOnTable = action.payload.cardsOnTable;
-        newState.backlog.push("Kártyacsere történt, mivel 3 mozdony volt az asztalon");
+            if (
+                state.currentPlayer.wagonCards &&
+                state.currentPlayer.wagonCards[state.currentPlayer.wagonCards.length - 1].type === "locomotive" // mozdony húzása után nem húzhat több kártyát
+            ) {
+                // ha nem léphet többet - a másik játékos jön
+                const next = state.currentPlayer?.index == 0 ? 1 : 0;
 
-        for (let i=0; i<5; i++) {
-            newState.storage.push(newState.cardsOnTable.pop());
-        }
-        for (let i = newState.storage.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            const temp = newState.storage[i];
-            newState.storage[i] = newState.storage[j];
-            newState.storage[j] = temp;
-        }
-        for(let i=0; i<5; i++) {
-            newState.cardsOnTable.push(newState.storage.pop());
-        }
+                state.currentPlayer.status = 'END';
 
-        return newState;
-    } else if (action.type === "DESTINATION_MOUSE_ENTER") {
-        newState.ld = action.payload.dest;
-        newState.ldPair = [];
-        newState.ldPair.push(newState.ld?.from);
-        newState.ldPair.push(newState.ld?.to);
-        return newState;
-    } else if (action.type === "DESTINATION_MOUSE_LEAVE") {
-        newState.ldPair = [];
-        return newState;
-    }
+                state.players[state.currentPlayer.index].isSelected = false;
+                state.players[next].isSelected = true;
+                state.players[next].round++;
 
-    return newState;
+                state.currentPlayer = Object.assign({}, state.players[next]);
+                state.currentPlayer.status = 'BEGIN';
+
+                console.log('Next round, player:', state.currentPlayer);
+            } else {
+                // második körös húzás
+                state.currentPlayer.status = 'DRAW';
+            }
+
+        } else if (state.currentPlayer?.status === 'DRAW') {
+            console.log('Player status: DRAW'); // második körös húzás
+
+            if (state.onFieldWagonCards && state.wagonCards) {
+
+                console.log('REFRESH PLAYER CARDS')
+                state.currentPlayer?.wagonCards?.push(state.onFieldWagonCards[idx]);
+
+                state.onFieldWagonCards[idx] = state.wagonCards[0];
+                state.wagonCards = state.wagonCards.slice(1, state.wagonCards.length);
+                
+                state.players.forEach((player, i) => {
+                    if (i === state.currentPlayer?.index) {
+                        player.wagonCards = state.currentPlayer?.wagonCards;
+                        console.log(`${player.name} ${state.onFieldWagonCards[idx].type} vasútikocsi kártyát húzott az asztalról`)
+                        player.moves.push(`${player.name} ${state.onFieldWagonCards[idx].type} vasútikocsi kártyát húzott az asztalról`);
+                    }
+                });
+            }
+
+            let next = state.currentPlayer?.index == 0 ? 1 : 0;
+
+            state.currentPlayer.status = 'END';
+        
+            state.players[state.currentPlayer.index].isSelected = false;
+            state.players[next].isSelected = true;
+            state.players[next].round++;
+
+            state.currentPlayer = Object.assign({}, state.players[next]);
+            state.currentPlayer.status = 'BEGIN';
+
+            console.log('Next round, player:', state.currentPlayer);
+            
+        }
+        state = JSON.parse(JSON.stringify(state));
+        return state;
+    }    
+
+    return state;
 };
 
 function generateWagonCards() {
@@ -209,7 +251,7 @@ function generateWagonCards() {
         }
     }
     for (let i = 0; i < 14; i++) {
-        deck.push({ coltypeor: "colorful" });
+        deck.push({ type: "locomotive" });
     }
     return deck
         .map((a) => ({ sort: Math.random(), value: a }))
@@ -240,4 +282,8 @@ function generateLongDestinationCards() {
       .map((a) => ({ sort: Math.random(), value: a }))
       .sort((a, b) => a.sort - b.sort)
       .map((a) => a.value);
+}
+
+function countWagons(deck) {
+    return deck.filter((card) => card.type === "locomotive").length;
 }

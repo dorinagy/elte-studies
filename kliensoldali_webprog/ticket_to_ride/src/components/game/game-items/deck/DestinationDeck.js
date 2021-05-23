@@ -1,7 +1,7 @@
 import React from "react";
 import Card from "./Card";
 
-function DeckTicket() {
+function DestinationDeck() {
   return (
     <div className="destination-deck">
       <Card type="card_back"/>
@@ -9,4 +9,4 @@ function DeckTicket() {
   );
 }
 
-export default DeckTicket;
+export default DestinationDeck;

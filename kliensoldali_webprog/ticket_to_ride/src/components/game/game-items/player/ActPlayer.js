@@ -7,8 +7,6 @@ function ActPlayer() {
 
   const player = useSelector(getCurrentPlayer);
 
-  console.log('current player:', player)
-
   return (
    <div className="act-player">
       <h1>Aktuális játékos:</h1>
@@ -32,8 +30,8 @@ function ActPlayer() {
       <div>Vasúti kártyák: {player.wagonCards.length}</div>
       <br/>
       <div><strong>Utolsó 2 lépés: </strong></div>
-      <div>{player.lastStep}</div>
-      <div>{player.previousLastStep}</div>
+      <div>{player.moves[player.moves.length-1]}</div>
+      <div>{player.moves[player.moves.length-2]}</div>
     </div>
   );
 }

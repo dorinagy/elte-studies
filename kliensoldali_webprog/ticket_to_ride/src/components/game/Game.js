@@ -1,21 +1,26 @@
+import { Redirect } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+
+import ActPlayer from "./game-items/player/ActPlayer";
+import Players from "./game-items/player/Players";
 import Cards from "./game-items/deck/Cards";
 import Deck from "./game-items/deck/Deck";
-import Players from "./game-items/player/Players";
-import ActPlayer from "./game-items/player/ActPlayer";
 import Map from "./game-items/map/Map";
-import React, { useState, useEffect } from "react";
-import { Redirect } from "react-router-dom";
+
 import "./Game.css";
+import "./game-items/player/Players.css";
 
 function Game() {
 
   useEffect(() => {
     window.onbeforeunload = function () {
-        console.log("If you refresh the page, all data will be lost.");
+        console.log("If you refresh the page game data will be lost.");
         return true;
     };
 
-    return () => window.onbeforeunload = null;
+    return () => {
+        window.onbeforeunload = null;
+    };
   }, []);
 
   const [goBack, setGoBack] = useState(false);

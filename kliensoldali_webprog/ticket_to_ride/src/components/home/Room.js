@@ -7,16 +7,16 @@ const Room = () => {
 
   const history = useHistory();
 
+  const players = useSelector(getPlayers);
+  const playerNumber = useSelector(countPlayers);
+
   const connectRoom = () => {
-    dispatch(startGame("START_GAME"));
+    dispatch(startGame({players}));
     history.push("/waiting-room")
   };
 
-  const playerNumber = useSelector(countPlayers);
-  const players = useSelector(getPlayers);
-
   const setName = (value, index) => {
-    players[`player${index}`].name = value;
+    players[index].name = value;
   }
 
   const dispatch = useDispatch();
@@ -33,49 +33,9 @@ const Room = () => {
   };
 
   const handleCreate = () => {
-    dispatch(startGame("START_GAME"));
+    dispatch(startGame({players}));
     history.push("/waiting-room");
   };
-
-  const renderInputFields = (playerNumber) => {
-    const ret = [];
-    for (let i=0; i<playerNumber; i++) {      
-      let element
-      if (players && players[`player${i+1}`] && players[`player${i+1}`].name) {
-        element = <div className="input">
-            <label className="label">Név: </label>
-            <input
-              id={`name-${i}`}
-              key={`input-${i}`}
-              type="text"
-              required
-              maxLength={20}
-              className="custom-input room-item"
-              placeholder={`Játékos${i+1}`}
-              onChange={(e) => { setName(e.target.value, i+1); }}
-              value={players[`player${i+1}`].name}
-            />
-          </div>
-      } else {
-        element = <div className="input">
-            <label className="label">Név: </label>
-            <input
-              id={`name-${i}`}
-              key={`input-${i}`}
-              type="text"
-              required
-              maxLength={20}
-              className="custom-input room-item"
-              placeholder={`Játékos${i+1}`}
-              onChange={(e) => { setName(e.target.value, i+1); }}
-            />
-          </div>
-      }
-
-      ret.push(element)
-    }
-    return ret;
-  }
 
   return (
     <div className="room">
@@ -94,7 +54,18 @@ const Room = () => {
               onClick={removePlayer}
             >-</button>
         </div>
-        <div>{renderInputFields(playerNumber)}</div>
+        <div className="input"  key={`player-input`}>
+            <label className="label" key={`player-input`}>Név: </label>
+            <input
+              id={`name`}
+              type="text"
+              required
+              maxLength={20}
+              className="custom-input room-item"
+              placeholder={`Játékos1`}
+              onChange={(e) => { setName(e.target.value, 0); }}
+            />
+        </div>
         <button type="submit" className="custom-btn room-item">
           Szoba Létrehozása
         </button>

@@ -9,80 +9,33 @@ export const status = {
 export const initPlayer = {
     name: '',
     points: 0,
-    vagons: 0,
+    wagons: 45,
     cards: [],
     destinations: 0,
-    lomgDestCards: [],
+    longDestCards: [],
     shortDestCards: [],
     wagonCards: [],
     round: 0,
     drawCount: 0,
-    isSelected: false
+    isSelected: false,
+    index: 0,
+    status: 'BEGIN',
+    moves: []
 }
 
-export const initalPlayers = {
-    player1: {
-        name: "",
-        points: 0,
-        vagons: 0,
-        cards: [],
-        destinations: 0,
-        lomgDestCards: [],
-        shortDestCards: [],
-        wagonCards: [],
-        round: 0,
-        drawCount: 0,
-        isSelected: false
-    },
-    player2: {
-        name: "",
-        points: 0,
-        vagons: 0,
-        cards: [],
-        destinations: 0,
-        lomgDestCards: [],
-        shortDestCards: [],
-        wagonCards: [],
-        round: 0,
-        drawCount: 0,
-        isSelected: false
-    }
-};
+export const initalPlayers = [
+    Object.assign({}, initPlayer, {index:0}),
+    Object.assign({}, initPlayer, {index:1, name: 'Játékos2'})
+];
 
 export const initialGameState = {
     state: "INITAL", 
-    players: {
-            player1: {
-                name: "",
-                points: 0,
-                vagons: 0,
-                cards: [],
-                destinations: 0,
-                lomgDestCards: [],
-                shortDestCards: [],
-                wagonCards: [],
-                round: 0,
-                drawCount: 0,
-                isSelected: false
-            },
-            player2: {
-                name: "",
-                points: 0,
-                vagons: 0,
-                cards: [],
-                destinations: 0,
-                lomgDestCards: [],
-                shortDestCards: [],
-                wagonCards: [],
-                round: 0,
-                drawCount: 0,
-                isSelected: false
-            }
-        }, 
+    players: Object.assign([], initalPlayers), 
     cards: [], 
     cardsOnTable: [],
     backlog: [],
     gamedata: ticketToRideData,
     ldPair: [],
-    maxPlayers: 2
+    maxPlayers: 2,
+    currentPlayer: ''
 }
