@@ -22,7 +22,7 @@ export const initPlayer = {
 
 export const initalPlayers = {
     player1: {
-        name: "Player1",
+        name: "",
         points: 0,
         vagons: 0,
         cards: [],
@@ -35,7 +35,7 @@ export const initalPlayers = {
         isSelected: false
     },
     player2: {
-        name: "Player2",
+        name: "",
         points: 0,
         vagons: 0,
         cards: [],
@@ -53,7 +53,7 @@ export const initialGameState = {
     state: "INITAL", 
     players: {
             player1: {
-                name: "Player1",
+                name: "",
                 points: 0,
                 vagons: 0,
                 cards: [],
@@ -66,7 +66,7 @@ export const initialGameState = {
                 isSelected: false
             },
             player2: {
-                name: "Player2",
+                name: "",
                 points: 0,
                 vagons: 0,
                 cards: [],

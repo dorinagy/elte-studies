@@ -4,14 +4,14 @@ import { Redirect } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { initGame } from "../../redux/actions";
-import { getMaxPlayers, getPlayers } from "../../redux/selectors";
+import { getMaxPlayers, getPlayers, countPlayers } from "../../redux/selectors";
 
 import "./WaitingRoom.css";
 
 function Wait() {
 
   const players = useSelector(getPlayers);
-  const playersCount = useSelector(getPlayers).length;
+  const playersCount = useSelector(countPlayers);
   let maxPlayers = useSelector(getMaxPlayers);
   const history = useHistory();
 

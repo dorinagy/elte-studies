@@ -1,5 +1,5 @@
-export const countPlayers = ({ playerCountReducer }) =>
-    playerCountReducer;
+export const countPlayers = ({ playerCount}) =>
+    playerCount;
 
 export const getPlayers = ({ gameState }) =>
     gameState.players;

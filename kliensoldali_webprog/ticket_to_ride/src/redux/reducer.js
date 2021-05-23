@@ -2,7 +2,7 @@ import { ticketToRideData } from "../res/ticket-to-ride-data";
 
 import { initialGameState, initalPlayers, initPlayer } from "./status";
 
-export const playerCountReducer = (newState = 1, action) => {
+export const playerCountReducer = (newState = 0, action) => {
     const { type, payload } = action;
 
     if (type === "MODIFY_PLAYER_COUNT") {
