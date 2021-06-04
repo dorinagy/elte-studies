@@ -9,7 +9,7 @@ import {
     gameDataReducer
 } from "./reducer";
 
-const reducers = combineReducers({
+export const reducers = combineReducers({
     playerCount: playerCountReducer,
     gameState: gameStateReducer,
     gameData: gameDataReducer,

@@ -10,8 +10,18 @@ import Map from "./game-items/map/Map";
 import "./Game.css";
 import "./game-items/player/Players.css";
 
+import { SocketContext } from "../../socket/Context";
+/* import { roundSelector } from "../../redux/selectors";
+ *//* import handleNextRound from "../../redux/handleNextRound";
+ */
 function Game() {
 
+  const { isInRoom, isGameStarted } = useContext(SocketContext);
+
+/*   const dispatch = useDispatch();
+ */
+/*   const endOfRound = useSelector(roundSelector.isRoundEnded);
+ */
   useEffect(() => {
     window.onbeforeunload = function () {
         console.log("If you refresh the page game data will be lost.");
@@ -22,6 +32,14 @@ function Game() {
         window.onbeforeunload = null;
     };
   }, []);
+
+/*   useEffect(() => {
+    if (endOfRound) {
+      dispatch(handleNextRoundThunk());
+    }
+  }, [endOfRound]); */
+
+  if (!isGameStarted) return <Redirect to={isInRoom ? "/waiting-room" : "/"} />;
 
   const [goBack, setGoBack] = useState(false);
 

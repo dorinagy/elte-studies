@@ -3,6 +3,8 @@ import { useHistory } from "react-router-dom";
 import { startGame, modifyPlayerCount } from "../../redux/actions";
 import { countPlayers, getPlayers } from "../../redux/selectors";
 
+import { SocketContext } from "../../socket/Context";
+
 const Room = () => {
 
   const history = useHistory();
@@ -10,10 +12,19 @@ const Room = () => {
   const players = useSelector(getPlayers);
   const playerNumber = useSelector(countPlayers);
 
-  const connectRoom = () => {
+  const { createRoom, joinRoom } = useContext(SocketContext);
+
+  const handleCreate = () =>
     dispatch(startGame({players}));
-    history.push("/waiting-room")
-  };
+    createRoom(newCount, newName, () => {
+    history.push("/waiting-room");
+  });
+
+  const handleConnect = () => {
+    joinRoom(connectId, connectName, (roomId) => {
+      history.push("/waiting-room");
+    });
+  }
 
   const setName = (value, index) => {
     players[index].name = value;
@@ -30,11 +41,6 @@ const Room = () => {
     if (playerNumber > 1) {
       dispatch(modifyPlayerCount(-1));
     }
-  };
-
-  const handleCreate = () => {
-    dispatch(startGame({players}));
-    history.push("/waiting-room");
   };
 
   return (
@@ -73,7 +79,7 @@ const Room = () => {
       </div>
 
       <div className="room-container">
-      <form className="room_connect" onSubmit={connectRoom}>
+      <form className="room_connect" onSubmit={handleConnect}>
         <div className="room-description">Csatlakozás a szobához</div>
         <div className="room-connect">
           <label className="player-label">
