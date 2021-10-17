@@ -7,15 +7,13 @@ use Illuminate\Database\Seeder;
 use \App\Models\Movie;
 use \App\Models\Rating;
 
-class DatabaseSeeder extends Seeder
-{
+class DatabaseSeeder extends Seeder {
     /**
      * Seed the application's database.
      *
      * @return void
      */
-    public function run()
-    {
+    public function run() {
         $faker = \Faker\Factory::create();
 
         // \App\Models\User::factory(10)->create();

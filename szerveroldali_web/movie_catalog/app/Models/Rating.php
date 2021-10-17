@@ -9,8 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use \App\Models\User;
 use \App\Models\Movie;
 
-class Rating extends Model
-{
+class Rating extends Model {
     use HasFactory;
     use SoftDeletes;
 
