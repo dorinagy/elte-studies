@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\User;
+use App\Models\Movie;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -21,16 +21,13 @@ class MovieFactory extends Factory {
      */
     public function definition() {
         return [
-            'name' => $this->faker->name(),
-            'title' => $this->faker->word(),
+            'title' => Str::ucfirst(join(' ', $this->faker->words(random_int(1,3)))),
             'director' => $this->faker->name(),
-            'description' => $this->faker->sentence(),
-            'year' => $this->faker->numberBetween(1910, 2021),
-            'length' => Integer::random(10),
-            'image' => Str::NULL,
-            'ratings_enabled' => true,
-            'created_at' => now(),
-            'updated_at' => now(),
+            'description' => $this->faker->paragraph(random_int(1,4)),
+            'year' => random_int(1888, now()->year),
+            'length' => $this->faker->numberBetween(3600, 14000),
+            'image' => $this->faker->imageUrl(800, 600, 'cats'),
+            'ratings_enabled' => $this->faker->boolean()
         ];
     }
 

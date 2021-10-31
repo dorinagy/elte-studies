@@ -1,7 +1,8 @@
+
 # Ezzel a shell scripttel lehet nullarol inicializalni a Laravel projektet Linux rendszereken
+composer install --no-interaction
 cp .env.example .env
 php artisan key:generate
-composer install --no-interaction
 npm install
 npm run prod
 # A storage, cache irhato kell legyen a webszerver altal

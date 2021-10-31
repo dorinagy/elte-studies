@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\User;
+use App\Models\Rating;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -21,12 +21,10 @@ class RatingFactory extends Factory {
      */
     public function definition() {
         return [
-            'user_id' => Integer::random(10),
-            'movie_id' => Integer::random(10),
-            'rating' => $this->faker->numberBetween(1, 5),
-            'comment' => $this->faker->sentence(),
-            'created_at' => now(),
-            'updated_at' => now(),
+            'rating' => random_int(1,5),
+            'comment' => $this->faker->paragraph(random_int(1,3)),
+            'created_at' => $this->faker->date($format = 'Y-m-d H:m:s', $max = 'now'),
+            'updated_at' => $this->faker->date($format = 'Y-m-d H:m:s', $max = 'now')
         ];
     }
 

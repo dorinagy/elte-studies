@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use App\Models\Rating;
+use Database\Factories\RatingFactory;
 
 class RatingSeeder extends Seeder {
     /**
@@ -13,7 +13,6 @@ class RatingSeeder extends Seeder {
      * @return void
      */
     public function run() {
-        RatingFactory::new()->count(5)->create();
-        // factory(Rating::class, 5)->create();
+        RatingFactory::new()->count(10)->create();
     }
 }
