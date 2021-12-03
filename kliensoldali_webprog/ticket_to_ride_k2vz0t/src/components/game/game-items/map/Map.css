@@ -1,0 +1,12 @@
+.game-map {
+    margin: 20px 0px;
+    width: 100%;
+}
+
+.game-map img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 80%;
+    border: 2px solid black;
+}

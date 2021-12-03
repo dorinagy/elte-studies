@@ -1,0 +1,98 @@
+.home {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    text-align: center;
+    background: #1d254a;
+    height: 100%;
+}
+
+.logo {
+    max-width: 60%;
+    max-height: 70%;
+    padding: 30px;
+}
+
+.room {
+    color: #fff;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    font-size: 1.1em;
+    padding-bottom: 300px;
+}
+
+.room-container {
+    align-items: left;
+    float: left;
+    text-align: left;
+    margin-left: 0px;
+    padding: 50px 100px 50px 100px;
+}
+
+.room-description {
+    font-size: 1.2em;
+    padding-bottom: 20px;
+}
+
+/* buttons */
+.custom-btn {
+    padding: 8px 36px;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    outline: none;
+    background: linear-gradient(
+        90deg,
+        rgb(122, 190, 236) 0%,
+        rgb(62, 139, 165) 100%
+    );
+    color: #fff;
+    text-transform: capitalize;
+    margin: 15px;
+}
+
+.input {
+    margin-left: 0px;
+}
+
+.players div {
+    text-align: center;
+}
+
+.room-container .custom-btn {
+    margin-left: 0px;
+}
+
+/* Játékosok száma */
+.room-players {
+    display: flex;
+    flex-direction: row;
+    font-size: 1.3em;
+}
+
+.room-players-count {
+    padding: 15px;
+}
+
+/* Új szoba */
+.new-room-text {
+    min-width: 100px;
+}
+
+.custom-input {
+    padding: 14px 28px 14px 16px;
+    margin-bottom: 15px;
+    margin-left: 15px;
+    border-radius: 4px;
+    border: 2px solid #53aab2;
+    width: 200px;
+    background: transparent;
+    color: #fff;
+}
+
+.custom-btn.large {
+    font-size: 1.2em;
+    margin: 30px;
+}

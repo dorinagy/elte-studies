@@ -25,10 +25,8 @@ class MovieFactory extends Factory {
             'director' => $this->faker->name(),
             'description' => $this->faker->paragraph(random_int(1,4)),
             'year' => random_int(1888, now()->year),
-            'length' => $this->faker->numberBetween(3600, 14000),
-            'image' => $this->faker->imageUrl(800, 600, 'cats'),
-            'ratings_enabled' => $this->faker->boolean()
-        ];
+            'length' => $this->faker->numberBetween(3600, 18000),
+            'image' => 'movie.png',
+            'ratings_enabled' => $this->faker->boolean(),        ];
     }
-
 }

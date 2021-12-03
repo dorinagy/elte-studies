@@ -16,13 +16,21 @@ use App\Http\Controllers\RatingController;
 */
 
 Route::get('/', function () {
-    //return view('welcome');
     return redirect()->route('movies.index');
 });
 
 Route::resource('movies', MovieController::class);
+Route::get('toplist', [MovieController::class, 'toplist'])->withTrashed()->name('movies.toplist');
+Route::post('/movies/save', [MovieController::class, 'save'])->withTrashed()->name('movies.save');
+Route::post('/movies/destroy/{movie}', [MovieController::class, 'destroy'])->withTrashed()->name('movies.destroy'); 
+Route::get('/movies/restore/{id}', [MovieController::class, 'restore'])->withTrashed()->name('movies.restore'); 
+
 
 Route::resource('ratings', RatingController::class);
+Route::get('/ratings/create/{movie_id}', [RatingController::class, 'create'])->name('ratings.create');
+Route::post('/ratings/save/{movie_id}', [RatingController::class, 'save'])->name('ratings.save');
+Route::get('/ratings/destroyAll/{id}',[RatingController::class, 'destroyAll'])->withTrashed()->name('ratings.destroyAll');
+
 
 Route::get('/dashboard', function () {
     return view('dashboard');

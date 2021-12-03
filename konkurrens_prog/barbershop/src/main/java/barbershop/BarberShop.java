@@ -216,11 +216,23 @@ public class BarberShop {
         this.waitingTime.add(costumer.getWaitTime());
     }
 
-    public synchronized Costumer removeFromQueue() { 
-        return this.costumersWaiting.remove(); 
-    }
-
-    public synchronized Costumer getNextInQueue() { 
-        return this.costumersWaiting.peek(); 
+    public synchronized Costumer getNextInQueue(Boolean doesBeardTrim) {
+        Costumer costumer = this.costumersWaiting.peek();
+        
+        if (costumer == null) return null;
+        
+        if (costumer.wantsBeardTrim()) {
+            System.out.println("Costumer wants beard trim.");
+            if (doesBeardTrim) {
+                System.out.println("Barber works on costumer's beard.");
+                return this.costumersWaiting.remove();
+            } else {
+                System.out.println("Barber does not do beard trim.");
+                return null;
+            }
+        }
+        
+        System.out.println("Barber works on costumer's hair.");
+        return this.costumersWaiting.remove();
     }
 }

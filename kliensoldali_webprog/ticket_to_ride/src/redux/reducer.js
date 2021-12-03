@@ -2,11 +2,23 @@ import { ticketToRideData } from "../res/ticket-to-ride-data";
 
 import { initialGameState, initalPlayers } from "./status";
 
-export const playerCountReducer = (state = 0, action) => {
+import socket from "../socket/socket";
+
+export const playerCountReducer = (state = 2, action) => {
     const { type, payload } = action;
 
     if (type === "MODIFY_PLAYER_COUNT") {
         return state + (payload);
+    }
+
+    return state;
+};
+
+export const playerNameReducer = (state = "", action) => {
+    const { type, payload } = action;
+
+    if (type === 'MODIFY_PLAYER_NAME') {
+        return (state = payload);
     }
 
     return state;
@@ -26,13 +38,47 @@ export const gameStateReducer = (
 ) => {
     const { type, payload } = action;
 
+    if (type === 'UPDATE_GAME_STATE') {
+        const newState = payload;
+        return newState;
+    }
+
     if (type === "START_GAME") {
 
         state.state = 'START_GAME';
         state.players = payload.players;
+        
         // set current player
-        state.currentPlayer = state.players['player1'];
+        state.currentPlayer = payload.players[0];
         state.code = Math.random().toString(36).substring(7); // generate room code
+
+        socket.emit(
+            "sync-state",
+            state.code,
+            state,
+            true,
+            (ack) => {}
+        );
+
+    } else if (type === 'JOIN_ROOM') {
+        const { players, maxPlayers, code, name } = payload;
+        let newState = state;
+        newState.players = players;
+        newState.maxPlayers = maxPlayers;
+        newState.code = code;
+        newState.currentPlayer = players[0];
+        newState.status = 'WAITING_FOR_PLAYERS';
+        newState.currentPlayer.status = 'BEGIN';
+        //newState.players?.push({ name, id: v4(), isOwner: false });
+
+        socket.emit(
+            "sync-state",
+            newState.code,
+            newState,
+            true,
+            (ack) => {}
+        );
+        return newState;
 
     } else if (type === "INIT_GAME") {
         state.state = 'INIT_GAME';
@@ -57,7 +103,8 @@ export const gameStateReducer = (
 
         state.players = payload.players
         // set current player
-        state.currentPlayer = state.players[0];
+        console.log('STATE PLAYERS:', state.players)
+        state.currentPlayer = payload.players[0];
 
         // add wagon cards to players (4)
         state.players.forEach((player) => {
@@ -88,6 +135,9 @@ export const gameStateReducer = (
         state.players[0].isSelected = true;
 
         state.status = 'IN_GAME';
+
+        socket.emit("sync-state", state.code, state, true, (ack) => {});
+
         return state;
 
     }  else if (type === 'DRAW_FROM_DECK') {
@@ -140,21 +190,20 @@ export const gameStateReducer = (
             console.log('Next round, player:', state.currentPlayer.name);
         }
 
-        state = JSON.parse(JSON.stringify(state));
+        socket.emit("sync-state", state.code, state, true, (ack) => {});
+
         return state;
 
     } else if (type === 'DRAW_CARD') {
         /* 
             VASÚTI KÁRTYA HÚZÁSA AZ ASZTALRÓL
         */
-        console.log('player status', state.currentPlayer) // aktuális játékos
         const { number: idx } = payload; // kártya száma
         if (state.currentPlayer?.status === 'BEGIN') { // ELSŐ KÖRÖS HÚZÁS  
 
             // ha van a pakliban kártya
             if (state.onFieldWagonCards && state.wagonCards) {
 
-                console.log('REFRESH PLAYER CARDS');
                 state.currentPlayer?.wagonCards?.push(state.onFieldWagonCards[idx]);
 
                 // kicseréljük a húzott kártyát

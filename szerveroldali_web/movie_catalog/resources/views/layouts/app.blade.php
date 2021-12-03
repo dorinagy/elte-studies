@@ -22,10 +22,10 @@
 <body>
     <div id="app">
         
-        @yield('navigation')
+        @include('layouts.navigation')
 
         <main class="py-4">
-            @yield('main-content')
+            @yield('content')
         </main>
     </div>
 

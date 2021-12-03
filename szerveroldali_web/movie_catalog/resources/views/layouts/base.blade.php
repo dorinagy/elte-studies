@@ -17,7 +17,7 @@
     </head>
     <body>
         <div id="app">
-            @yield('navigation')
+            @include('layouts.navigation')
 
             <main>
                 @yield('main-content')

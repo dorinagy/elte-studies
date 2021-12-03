@@ -1,0 +1,9 @@
+npx sequelize model:generate --name Storage --attributes name:string,capacity:integer
+
+npx sequelize model:generate --name Appliance --attributes name:string
+
+npx sequelize model:generate --name Ingredient --attributes name:string,amount:integer,StorageId:integer
+
+npx sequelize model:generate --name Recipe --attributes name:string,isVegetarian:boolean,doneCount:integer,ApplianceId:integer
+
+npx sequelize migration:generate --name create-recipe-ingredient

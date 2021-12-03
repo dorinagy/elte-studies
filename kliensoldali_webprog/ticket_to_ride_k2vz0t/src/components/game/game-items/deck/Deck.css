@@ -1,0 +1,36 @@
+/* Saját kártyák */
+.cards {
+    max-width: fit-content;
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+}
+
+.train-ticket {
+    width: 160px;
+    border-radius: 10px;
+    margin: 20px 5px;
+}
+
+.train-ticket img {
+    height: 100%;
+    width: 100%;
+}
+
+/* Pakli */
+.game-deck {
+    margin: 0px;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    max-width: fit-content;
+}
+
+
+.game-deck .train-ticket{
+    margin: 5px;
+    width: 120px;
+}

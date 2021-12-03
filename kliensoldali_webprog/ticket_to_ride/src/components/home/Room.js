@@ -1,36 +1,57 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
+import socket from "../../socket/socket";
 import { useHistory } from "react-router-dom";
-import { startGame, modifyPlayerCount } from "../../redux/actions";
-import { countPlayers, getPlayers } from "../../redux/selectors";
-
-import { SocketContext } from "../../socket/Context";
+import { useDispatch, useSelector } from "react-redux";
+import { countPlayers, getPlayers, getRoomCode } from "../../redux/selectors";
+import { startGame, modifyPlayerCount, joinRoom, createRoom, modifyPlayerName } from "../../redux/actions";
 
 const Room = () => {
+
+  const [name, setName] = useState("");
+  const [roomId, setRoomId] = useState("");
 
   const history = useHistory();
 
   const players = useSelector(getPlayers);
   const playerNumber = useSelector(countPlayers);
 
-  const { createRoom, joinRoom } = useContext(SocketContext);
-
-  const handleCreate = () =>
-    dispatch(startGame({players}));
-    createRoom(newCount, newName, () => {
-    history.push("/waiting-room");
-  });
-
-  const handleConnect = () => {
-    joinRoom(connectId, connectName, (roomId) => {
-      history.push("/waiting-room");
-    });
-  }
-
-  const setName = (value, index) => {
-    players[index].name = value;
-  }
-
   const dispatch = useDispatch();
+
+  const connectRoom = (e) => {
+    
+    e.preventDefault();
+
+    socket.emit("join-room", roomId, (ack) => {
+
+      if (ack.status === "ok") {
+          socket.emit("get-state", roomId, (stateAck) => {
+            console.log('roomid',roomId)
+            if (stateAck.status === "ok") {
+              const state = JSON.parse(stateAck.state); 
+              const syncRoomInfo = {
+                players: state.players,
+                maxPlayers: state.maxPlayers,
+                code: state.code,
+                name,
+              };
+
+              dispatch(joinRoom(syncRoomInfo));
+              dispatch(modifyPlayerName(name));
+              dispatch(startGame({players}));
+
+              history.push("/waiting-room");
+            }
+          });
+      } else {
+        alert(ack.message + " " + roomId);
+      }
+    })
+  };
+
+  const setPlayerName = (name, index) => {
+    setName(name);
+    players[index].name = name;
+  }
 
   const addPlayer = () => {
     if (playerNumber < 5) {
@@ -41,6 +62,21 @@ const Room = () => {
     if (playerNumber > 1) {
       dispatch(modifyPlayerCount(-1));
     }
+  };
+
+  const handleCreate = (e) => {
+    e.preventDefault();
+        socket.emit("create-room", playerNumber , (ack) => {
+          if (ack.status === "ok") {
+            dispatch(modifyPlayerName(name));
+            dispatch(createRoom({ name, roomsize: playerNumber, roomcode: ack.roomId }));
+            dispatch(startGame({players}));
+
+            history.push("/waiting-room");
+          } else {
+            alert("error creating room");
+          }
+      });
   };
 
   return (
@@ -69,9 +105,19 @@ const Room = () => {
               maxLength={20}
               className="custom-input room-item"
               placeholder={`Játékos1`}
-              onChange={(e) => { setName(e.target.value, 0); }}
+              onChange={(e) => { setPlayerName(e.target.value, 0); }}
             />
         </div>
+       {/*  <div>
+          <label className="label" key={`room-input`}>Szobakód: </label>
+          <input
+            type="text"
+            maxLength={7}
+            value={roomId}
+            onChange={(e) => {setRoomId(e.target.value);}}
+            className="custom-input room-item"
+          />
+        </div> */}
         <button type="submit" className="custom-btn room-item">
           Szoba Létrehozása
         </button>
@@ -79,7 +125,7 @@ const Room = () => {
       </div>
 
       <div className="room-container">
-      <form className="room_connect" onSubmit={handleConnect}>
+      <form className="room_connect" onSubmit={connectRoom}>
         <div className="room-description">Csatlakozás a szobához</div>
         <div className="room-connect">
           <label className="player-label">
@@ -102,6 +148,7 @@ const Room = () => {
             id="room-id"
             type="text"
             maxLength={20}
+            onChange={(e) => {setRoomId(e.target.value);}}
             className="custom-input room-item"
           />
         </div>
