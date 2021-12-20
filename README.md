@@ -6,10 +6,11 @@ Tanulmányaim alatt megírt kódok - órai munka, házi feladatok, beadandók, z
 
 4. félév
    - operációs rendszerek gyakorlati zh-k
-   - programozási technológia beadandók
+   - programozási technológia beadandók - RPG game
    - kliensoldali webprogramozás beadandó - Ticket To Ride
    - konkurrens programozás beadandó - Barber Shop
    - kriptográfia - beadandók + zh
    
 5.félév
-   - szerveroldali webprogramozás beadandó + zh 
+   - szerveroldali webprogramozás beadandó (Movie Catalog) + zh-k
+   - szoftvertechnológia beadandó (csapatmunka) - Space Battle Game
