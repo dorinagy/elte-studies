@@ -1,0 +1,81 @@
+type Query {
+    helloAuth: String,
+    recipes: [Recipe],
+    ingredient(id: ID!): Ingredient!,
+    smallestStorage: Storage!,
+    statistics: StatsResult!
+}
+
+type Mutation {
+    updateIngredient(ingredientId: ID!, input: IngredientsInput!): Ingredient,
+    storeIngredients(storageId: ID!, ingredients: [IngredientsInput]): [Ingredient],
+    changeApplianceName(applianceId: ID!, newName: String): Appliance,
+}
+
+input IngredientsInput {
+    name: String
+    amount: Int
+    isVegetarian: Boolean
+    doneCount: Int
+    appliance: ApplianceType
+}
+
+input ApplianceType {
+    id: ID!
+    name: String
+}
+
+type StatsResult {
+    popularVegetarianRecipeCount: Int!
+    mostPopularRecipeName: String
+    leastPopularRecipeName: String
+    averageDoneCount: Float!
+}
+
+type Recipe {
+  id: ID!
+  name: String
+  isVegetarian: Boolean
+  doneCount: Int
+  appliance: Appliance
+  ingredients: [IngredientType]
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+input IngredientInput {
+    id: ID!
+    name: String
+    amount: Int
+}
+
+type IngredientType {
+  id: ID!
+  name: String
+  amount: Int
+}
+
+type Ingredient {
+  id: ID!
+  name: String
+  amount: Int
+  isInBigStorage: Boolean
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Appliance {
+  id: ID!
+  name: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Storage {
+  id: ID!
+  name: String
+  capacity: Int
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  ingredients: [Ingredient]
+}
