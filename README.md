@@ -10,3 +10,6 @@ Tanulmányaim alatt megírt kódok - órai munka, házi feladatok, beadandók, z
    - kliensoldali webprogramozás beadandó - Ticket To Ride
    - konkurrens programozás beadandó - Barber Shop
    - kriptográfia - beadandók + zh
+   
+5.félév
+   - szerveroldali webprogramozás beadandó + zh 
